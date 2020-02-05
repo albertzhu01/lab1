@@ -51,7 +51,7 @@ replace the `failwith` expression below with the integer `42`, so that
 you submit, the Exercise 2 unit test should then pass.
 ......................................................................*)
 
-let exercise2 () = failwith "exercise2 not implemented" ;;
+let exercise2 () = 42 ;;
 
 (* From here on, you'll want to test your lab solutions locally before
 submitting them at the end of lab to Gradescope. A simple way to do that
@@ -108,7 +108,7 @@ appropriate OCaml expression to assign the value to the variable
 `exercise3` below.
 ......................................................................*)
 
-let exercise3 () = failwith "exercise3 not implemented" ;;
+let exercise3 () = ~-(5 - 3) ;;
 
 (* Hint: The OCaml concrete expression `~- 5 - 3` does *not*
 correspond to the abstract syntax above.
@@ -151,24 +151,22 @@ expressions below? Test your solution by uncommenting the examples
 typing error is generated.
 ......................................................................*)
 
-(*  <--- After you've replaced the ???s, remove this start of comment line
 
-let exercise6a : ??? = 42 ;;
+let exercise6a : int = 42 ;;
 
-let exercise6b : ??? =
+let exercise6b : string =
   let greet y = "Hello " ^ y
   in greet "World!";;
 
-let exercise6c : ??? =
+let exercise6c : float -> float =
   fun x -> x +. 11.1 ;;
 
-let exercise6d : ??? =
+let exercise6d : int -> bool =
   fun x -> x < x + 1 ;;
 
-let exercise6e : ??? =
+let exercise6e : int -> float -> int =
   fun x -> fun y -> x + int_of_float y ;;
 
-and remove this whole end of comment line too. ---->  *)
 	
 (*======================================================================
 Part 3: First-order functional programming
@@ -200,9 +198,9 @@ testing.
 ......................................................................*)
 
 let square (x : int) : int  =
-  failwith "square not implemented" ;;
+  x * x ;;
 
-let exercise7 = 0 ;;
+let exercise7 = square 5;;
 
 (*......................................................................
 Exercise 8: Define a function, `exclaim`, that, given a string, "exclaims"
@@ -219,7 +217,7 @@ get the following behavior:
 ......................................................................*)
 
 let exclaim (text : string) : string =
-  failwith "exclaim not implemented";;
+  String.capitalize text ^ "!" ;;
 
 (*......................................................................
 Exercise 9: Define a function, `small_bills`, that determines, given a
@@ -238,7 +236,7 @@ non-negative.
 ......................................................................*)
 
 let small_bills (price : int) : bool =
-  failwith "small_bills not implemented" ;;
+  price mod 20 <> 0 ;;
 
 (*......................................................................
 Exercise 10:
@@ -266,9 +264,34 @@ that:
 ......................................................................*)
 
 let computus_month (year : int) : int =
-  failwith "computus_month not implemented" ;;
+  let a = year mod 19 in
+  let b = year / 100 in
+  let c = year mod 100 in
+  let d = b / 4 in
+  let e = b mod 4 in
+  let f = (b + 8) / 25 in
+  let g = (b - f + 1) / 3 in
+  let h = (19 * a + b - d - g + 15) mod 30 in
+  let i = c / 4 in
+  let k = c mod 4 in
+  let l = (32 + 2 * e + 2 * i - h - k) mod 7 in  
+  let m = (a + 11 * h + 22 * l) / 451 in
+  (h + l - 7 * m + 114) / 31 ;;
+
 let computus_day (year : int) : int =
-  failwith "computus_day not implemented" ;;
+  let a = year mod 19 in
+  let b = year / 100 in
+  let c = year mod 100 in
+  let d = b / 4 in
+  let e = b mod 4 in
+  let f = (b + 8) / 25 in
+  let g = (b - f + 1) / 3 in
+  let h = (19 * a + b - d - g + 15) mod 30 in
+  let i = c / 4 in
+  let k = c mod 4 in
+  let l = (32 + 2 * e + 2 * i - h - k) mod 7 in 
+  let m = (a + 11 * h + 22 * l) / 451 in
+  ((h + l - 7 * m + 114) mod 31) + 1 ;;
 
 (*======================================================================
 Part 4: Code review
@@ -310,7 +333,10 @@ that you think is best, call over a staff member and go over your
 revised code together.
 ......................................................................*)
 
-(*** Place your revised version here. ***)
+(* Calculates the volume of a frustrum, where r1 and r2 are the radii
+of the frustrum and h is the height *)
+(* let frustrum_volume (r1 : float) (r2 : float) (h : float) : float =
+  Float.pi *. h /. 3. *. (r1 ** 2. +. r1 *. r2 +. r2 ** 2.) ;; *)
 
 (* During the code review, your boss drops by and looks over
 your proposed code. Your boss thinks that the function should be
@@ -322,8 +348,9 @@ Exercise 12: Revise your code to make sure that it uses the header
 line given at <https://url.cs51.io/frustrum>.
 ......................................................................*)
 
-(*** Place your updated revised version below, not as a comment,
-     because we'll be unit testing it. ***)
+let frustrum_volume (radius1 : float) (radius2 : float) (height : float) : float =
+  Float.pi *. height /. 3. *. (radius1 ** 2. +. radius1 *. radius2 +. radius2 ** 2.) ;;
+
 (*======================================================================
 Part 5: Utilizing recursion
 
@@ -343,8 +370,9 @@ For example,
    - : int = 1
 ......................................................................*)
 
-let factorial (x : int) : int =
-  failwith "factorial not implementated" ;;
+let rec factorial (x : int) : int =
+  if x = 0 then 1
+  else x * factorial (x - 1) ;;
 
 (*......................................................................
 Exercise 14: Define a recursive function `sum_from_zero` that sums all
@@ -362,5 +390,7 @@ the mathematician Carl Freiedrich Gauss as a seven-year-old, *in his
 head*!)
 ......................................................................*)
 
-let sum_from_zero (x : int) : int =
-  failwith "sum_from_zero not implemented" ;;
+let rec sum_from_zero (x : int) : int =
+  if x = 0 then 0
+  else if x < 0 then x + sum_from_zero (x + 1)
+  else x + sum_from_zero (x - 1) ;;
